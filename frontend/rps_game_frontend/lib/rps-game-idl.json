@@ -1,0 +1,269 @@
+{
+  "address": "pPYPJwpeo16rTvhJNdX4wGs2DzX7fUPpFQKo9AzMt3E",
+  "metadata": {
+    "name": "rps_game",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "create_game",
+      "discriminator": [124, 69, 75, 66, 184, 220, 72, 206],
+      "accounts": [
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 97, 109, 101]
+              },
+              {
+                "kind": "account",
+                "path": "player"
+              }
+            ]
+          }
+        },
+        {
+          "name": "player",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "bet_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "join_game",
+      "discriminator": [107, 112, 18, 38, 56, 173, 60, 128],
+      "accounts": [
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 97, 109, 101]
+              },
+              {
+                "kind": "account",
+                "path": "game.player1",
+                "account": "Game"
+              }
+            ]
+          }
+        },
+        {
+          "name": "player",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "make_move",
+      "discriminator": [78, 77, 152, 203, 222, 211, 208, 233],
+      "accounts": [
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 97, 109, 101]
+              },
+              {
+                "kind": "account",
+                "path": "game.player1",
+                "account": "Game"
+              }
+            ]
+          }
+        },
+        {
+          "name": "player",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "player_move",
+          "type": {
+            "defined": {
+              "name": "Move"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "reset_game",
+      "discriminator": [97, 146, 71, 156, 110, 206, 124, 224],
+      "accounts": [
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 97, 109, 101]
+              },
+              {
+                "kind": "account",
+                "path": "game.player1",
+                "account": "Game"
+              }
+            ]
+          }
+        },
+        {
+          "name": "player",
+          "signer": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Game",
+      "discriminator": [27, 90, 166, 125, 74, 100, 121, 18]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidGameState",
+      "msg": "Invalid game state for this operation"
+    },
+    {
+      "code": 6001,
+      "name": "CannotPlayAgainstSelf",
+      "msg": "Cannot play against yourself"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidMove",
+      "msg": "Invalid move"
+    },
+    {
+      "code": 6003,
+      "name": "MoveAlreadyMade",
+      "msg": "Move already made by this player"
+    },
+    {
+      "code": 6004,
+      "name": "UnauthorizedPlayer",
+      "msg": "Unauthorized player"
+    }
+  ],
+  "types": [
+    {
+      "name": "Game",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "player1",
+            "type": "pubkey"
+          },
+          {
+            "name": "player2",
+            "type": "pubkey"
+          },
+          {
+            "name": "bet_amount",
+            "type": "u64"
+          },
+          {
+            "name": "game_state",
+            "type": {
+              "defined": {
+                "name": "GameState"
+              }
+            }
+          },
+          {
+            "name": "player1_move",
+            "type": {
+              "defined": {
+                "name": "Move"
+              }
+            }
+          },
+          {
+            "name": "player2_move",
+            "type": {
+              "defined": {
+                "name": "Move"
+              }
+            }
+          },
+          {
+            "name": "winner",
+            "type": "pubkey"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "WaitingForPlayer"
+          },
+          {
+            "name": "InProgress"
+          },
+          {
+            "name": "Finished"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Move",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Rock"
+          },
+          {
+            "name": "Paper"
+          },
+          {
+            "name": "Scissors"
+          }
+        ]
+      }
+    }
+  ]
+}
